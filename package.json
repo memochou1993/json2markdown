@@ -1,11 +1,11 @@
 {
-  "name": "json2markdown",
+  "name": "@memochou1993/json2markdown",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc -p ./tsconfig.build.json && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
     "test": "vitest"
@@ -21,5 +21,16 @@
     "vite": "^4.4.5",
     "vite-plugin-dts": "^4.2.1",
     "vitest": "^2.1.1"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.js"
+    }
   }
 }
