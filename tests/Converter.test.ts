@@ -14,21 +14,10 @@ test('Converter.toMarkdownSchema', () => {
 });
 
 test('Converter.toMarkdown', () => {
-  const schema = [
-    { h1: 'title' },
-    { p: 'Hello, World!' },
-  ];
-  const markdown = Converter.toMarkdown(schema);
-
-  expect(markdown).toBe('# Title\n\nHello, World!\n\n');
-});
-
-test('Converter', () => {
   const before = readFileSync(`${dirname}/data/before.json`, 'utf-8');
   const after = readFileSync(`${dirname}/data/after.md`, 'utf-8');
   
-  const schema = Converter.toMarkdownSchema(JSON.parse(before));
-  const markdown = Converter.toMarkdown(schema);
+  const markdown = Converter.toMarkdown(JSON.parse(before));
 
   expect(markdown).toBe(after);
 });

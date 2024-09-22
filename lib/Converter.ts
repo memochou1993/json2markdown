@@ -1,15 +1,26 @@
 import { MarkdownSchema } from '~/types';
-
-let titleCase = (v: string) => v;
-
-try {
-  const scule = await import('scule');
-  titleCase = scule.titleCase;
-} catch {
-  //
-}
+import { toTitleCase } from './utils';
 
 class Converter {
+  static toMarkdown(obj: object) {
+    return Converter.toMarkdownSchema(obj)
+      .map((element) => {
+        const headings = Array.from({ length: 6 }, (_, i) => `h${i + 1}`);
+        const level = headings.findIndex(h => element[h]);
+        if (level !== -1) {
+          return `${'#'.repeat(level + 1)} ${toTitleCase(element[headings[level]] as string)}\n\n`;
+        }
+        if (element.ul) {
+          return `${element.ul.map(li => `- ${li}\n`).join('')}\n`;
+        }
+        if (typeof element.p === 'boolean') {
+          return `${toTitleCase(String(element.p))}\n\n`;
+        }
+        return `${element.p}\n\n`;
+      })
+      .join('');
+  }
+
   static toMarkdownSchema(obj: object, schema: MarkdownSchema[] = [], level = 1) {
     if (!obj) return [];
     for (let [key, value] of Object.entries(obj)) {
@@ -40,25 +51,6 @@ class Converter {
       schema.push({ p: value });
     }
     return schema;
-  }
-
-  static toMarkdown(schema: MarkdownSchema[]) {
-    return schema
-      .map((element) => {
-        const headers = Array.from({ length: 6 }, (_, i) => `h${i + 1}`);
-        const level = headers.findIndex(h => element[h]);
-        if (level !== -1) {
-          return `${'#'.repeat(level + 1)} ${titleCase(element[headers[level]] as string)}\n\n`;
-        }
-        if (element.ul) {
-          return `${element.ul.map(li => `- ${li}\n`).join('')}\n`;
-        }
-        if (typeof element.p === 'boolean') {
-          return `${titleCase(String(element.p))}\n\n`;
-        }
-        return `${element.p}\n\n`;
-      })
-      .join('');
   }
 }
 
