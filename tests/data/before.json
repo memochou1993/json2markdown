@@ -2,7 +2,7 @@
   "_ignored": {
     "foo": "bar"
   },
-  "header": "Hello, World!",
+  "heading_1": "Hello, World!",
   "list": [
     "foo",
     "bar",
@@ -10,7 +10,7 @@
   ],
   "nested": [
     {
-      "header": "Hello, World!",
+      "heading_2": "Hello, World!",
       "list": [
         "foo",
         "bar",
@@ -18,7 +18,7 @@
       ],
       "nested": [
         {
-          "header": "Hello, World!",
+          "heading_3": "Hello, World!",
           "list": [
             "foo",
             "bar",
@@ -26,7 +26,7 @@
           ],
           "nested": [
             {
-              "header": "Hello, World!",
+              "heading_4": "Hello, World!",
               "list": [
                 "foo",
                 "bar",
@@ -34,7 +34,7 @@
               ],
               "nested": [
                 {
-                  "header": "Hello, World!",
+                  "heading_5": "Hello, World!",
                   "list": [
                     "foo",
                     "bar",
@@ -42,7 +42,7 @@
                   ],
                   "nested": [
                     {
-                      "header": "Hello, World!",
+                      "heading_6": "Hello, World!",
                       "list": [
                         "foo",
                         "bar",

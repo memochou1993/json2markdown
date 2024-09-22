@@ -1,4 +1,4 @@
-# Header
+# Heading 1
 
 Hello, World!
 
@@ -10,7 +10,7 @@ Hello, World!
 
 # Nested
 
-## Header
+## Heading 2
 
 Hello, World!
 
@@ -22,7 +22,7 @@ Hello, World!
 
 ## Nested
 
-### Header
+### Heading 3
 
 Hello, World!
 
@@ -34,7 +34,7 @@ Hello, World!
 
 ### Nested
 
-#### Header
+#### Heading 4
 
 Hello, World!
 
@@ -46,7 +46,7 @@ Hello, World!
 
 #### Nested
 
-##### Header
+##### Heading 5
 
 Hello, World!
 
@@ -58,7 +58,7 @@ Hello, World!
 
 ##### Nested
 
-###### Header
+###### Heading 6
 
 Hello, World!
 
