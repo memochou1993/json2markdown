@@ -2,10 +2,10 @@ import { MarkdownSchema } from '~/types';
 import { toTitleCase } from './utils';
 
 class Converter {
-  static toMarkdown(obj: object) {
-    return Converter.toMarkdownSchema(obj)
+  static toMarkdown(data: Record<string, unknown>) {
+    const headings = Array.from({ length: 6 }, (_, i) => `h${i + 1}`);
+    return Converter.toMarkdownSchema(data)
       .map((element) => {
-        const headings = Array.from({ length: 6 }, (_, i) => `h${i + 1}`);
         const level = headings.findIndex(h => element[h]);
         if (level !== -1) {
           return `${'#'.repeat(level + 1)} ${toTitleCase(element[headings[level]] as string)}\n\n`;
@@ -21,16 +21,16 @@ class Converter {
       .join('');
   }
 
-  static toMarkdownSchema(obj: object, schema: MarkdownSchema[] = [], level = 1) {
-    if (!obj) return [];
-    for (let [key, value] of Object.entries(obj)) {
+  static toMarkdownSchema(data: Record<string, unknown>, level: number = 1, schema: MarkdownSchema[] = []) {
+    if (!data) return [];
+    const heading = `h${Math.min(level, 6)}`;
+    for (let [key, value] of Object.entries(data)) {
       if (key.startsWith('_')) continue;
       key = key.trim();
       if (typeof value === 'string') {
         value = value.trim().replaceAll('\\n', '\n');
       }
-      const tag = `h${Math.min(level, 6)}`;
-      schema.push({ [tag]: key });
+      schema.push({ [heading]: key });
       if (Array.isArray(value)) {
         const [item] = value;
         if (Array.isArray(item) && item.length > 0) {
@@ -38,17 +38,17 @@ class Converter {
           continue;
         }
         if (typeof item === 'object') {
-          Converter.toMarkdownSchema(item, schema, level + 1);
+          Converter.toMarkdownSchema(item, level + 1, schema);
           continue;
         }
         schema.push({ ul: value.map(item => typeof item === 'string' ? item : JSON.stringify(item)) });
         continue;
       }
       if (typeof value === 'object') {
-        Converter.toMarkdownSchema(value, schema, level + 1);
+        Converter.toMarkdownSchema(value as Record<string, unknown>, level + 1, schema);
         continue;
       }
-      schema.push({ p: value });
+      schema.push({ p: value as string });
     }
     return schema;
   }

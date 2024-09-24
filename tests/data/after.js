@@ -1,4 +1,4 @@
-# Heading 1
+export default `# Heading 1
 
 Hello, World!
 
@@ -72,9 +72,9 @@ Hello, World!
 
 # Code
 
-```
+\`\`\`
 console.log('Hello, World!');
-```
+\`\`\`
 
 # Table
 
@@ -92,3 +92,4 @@ console.log('Hello, World!');
 
 - ["foo","bar","baz"]
 
+`;

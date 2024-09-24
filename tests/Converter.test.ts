@@ -1,11 +1,12 @@
-import { readFileSync } from 'fs';
 import { expect, test } from 'vitest';
 import Converter from '../lib/Converter';
-
-const { dirname } = import.meta;
+import after from '../tests/data/after.js';
+import before from '../tests/data/before.js';
 
 test('Converter.toMarkdownSchema', () => {
-  const schema = Converter.toMarkdownSchema({ title: 'Hello, World!' });
+  const schema = Converter.toMarkdownSchema({
+    title: 'Hello, World!', 
+  });
 
   expect(schema).toStrictEqual([
     { h1: 'title' },
@@ -14,10 +15,7 @@ test('Converter.toMarkdownSchema', () => {
 });
 
 test('Converter.toMarkdown', () => {
-  const before = readFileSync(`${dirname}/data/before.json`, 'utf-8');
-  const after = readFileSync(`${dirname}/data/after.md`, 'utf-8');
-  
-  const markdown = Converter.toMarkdown(JSON.parse(before));
+  const markdown = Converter.toMarkdown(before);
 
   expect(markdown).toBe(after);
 });
