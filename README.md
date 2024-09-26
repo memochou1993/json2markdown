@@ -2,14 +2,6 @@
 
 A simple JSON to Markdown converter that transforms JSON data into easily readable text.
 
-## Installation
-
-To install the package, run:
-
-```bash
-npm install @memochou1993/json2markdown
-```
-
 ## Usage
 
 ### Using with ES Modules
@@ -20,13 +12,11 @@ Import the converter and use it in your code:
 import { Converter } from '@memochou1993/json2markdown';
 
 const markdown = Converter.toMarkdown({
-  title: 'Hello, World!',
+  'Hello, World!': 'It works!',
 });
 
-// Output: 
-// # Title
-//
-// Hello, World!
+// Output:
+// # Hello, World!\n\nIt works!\n\n
 ```
 
 ### Using with UMD Modules
@@ -35,13 +25,11 @@ Include the UMD script in your HTML file and use it:
 
 ```js
 const markdown = window.JSON2MD.Converter.toMarkdown({
-  title: 'Hello, World!',
+  'Hello, World!': 'It works!',
 });
 
-// Output: 
-// # Title
-//
-// Hello, World!
+// Output:
+// # Hello, World!\n\nIt works!\n\n
 ```
 
 ## Development

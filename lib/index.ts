@@ -1,4 +1,4 @@
-import Converter from './Converter';
+import Converter from './converter';
 
 export {
   Converter,

@@ -1,7 +1,8 @@
 {
   "name": "@memochou1993/json2markdown",
-  "private": true,
+  "private": false,
   "version": "0.0.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -32,5 +33,13 @@
       "import": "./dist/index.js",
       "require": "./dist/index.umd.js"
     }
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/memochou1993/json2markdown"
+  },
+  "keywords": [
+    "json",
+    "markdown"
+  ]
 }

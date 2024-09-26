@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>json2markdown</title>
   </head>
   <body>
     <div id="app"></div>
@@ -12,7 +12,7 @@
     <script src="dist/index.umd.js"></script>
     <script>
       const markdown = window.JSON2MD.Converter.toMarkdown({
-        title: 'Hello, World!',
+        'Hello, World!': 'It works!',
       });
       console.log(JSON.stringify(markdown));
     </script>
