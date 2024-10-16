@@ -1,76 +1,150 @@
+import { toTitleCase } from '@memochou1993/stryle';
 import { MarkdownSchema } from '~/types';
-import { toTitleCase } from '~/utils';
+
+interface ConverterOptions {
+  initialHeadingLevel?: number;
+  disableTitleCase?: boolean;
+}
 
 class Converter {
+  private schema: MarkdownSchema[] = [];
+
+  private startLevel: number;
+
+  private disableTitleCase: boolean;
+
+  constructor(data: unknown, options: ConverterOptions = {}) {
+    this.startLevel = options.initialHeadingLevel ?? 1;
+    this.disableTitleCase = options.disableTitleCase ?? false;
+    this.convert(data);
+  }
+
+  public static toMarkdown(data: unknown, options: ConverterOptions = {}): string {
+    return new Converter(data, options).toMarkdown();
+  }
+
   /**
-   * Converts a given data object into a Markdown string.
-   * 
-   * This method processes the data and identifies headings, unordered lists,
-   * and paragraph elements, formatting them according to Markdown syntax.
-   * 
-   * @param data - A record representing the input data to be converted.
-   * @returns A string formatted in Markdown based on the input data.
+   * Converts the provided data into Markdown format.
+   *
+   * This method processes a data structure and converts it into
+   * Markdown, handling headings, list items, table rows, and paragraphs.
    */
-  static toMarkdown(data: Record<string, unknown>) {
+  public toMarkdown(): string {
     const headings = Array.from({ length: 6 }, (_, i) => `h${i + 1}`);
-    return Converter.toMarkdownSchema(data)
+    return this.schema
       .map((element) => {
-        const level = headings.findIndex(h => element[h]);
+        const level = headings.findIndex(h => element[h] !== undefined);
         if (level !== -1) {
-          return `${'#'.repeat(level + 1)} ${toTitleCase(element[headings[level]] as string)}\n\n`;
+          return `${'#'.repeat(level + 1)} ${this.toTitleCase(String(element[headings[level]]))}\n\n`;
         }
-        if (element.ul) {
-          return `${element.ul.map(li => `- ${li}\n`).join('')}\n`;
+        if (element.li !== undefined) {
+          return `${'  '.repeat(Number(element.indent))}- ${element.li}\n`;
+        }
+        if (element.tr !== undefined) {
+          return `| ${element.tr.map(v => this.toTitleCase(v)).join(' | ')} |\n${element.tr.map(() => '| ---').join(' ')} |\n`;
+        }
+        if (element.td !== undefined) {
+          return `| ${element.td.join(' | ')} |\n`;
         }
         if (typeof element.p === 'boolean') {
-          return `${toTitleCase(String(element.p))}\n\n`;
+          return `${this.toTitleCase(String(element.p))}\n\n`;
+        }
+        if (element.br !== undefined) {
+          return '\n';
         }
         return `${element.p}\n\n`;
       })
       .join('');
   }
 
-  /**
-   * Constructs a Markdown schema from a given data object.
-   * 
-   * This method recursively traverses the data object to build a schema that
-   * identifies headings, lists, and paragraphs, which will later be converted to Markdown.
-   * 
-   * @param data - A record representing the input data.
-   * @param level - The current heading level (default is 1).
-   * @param schema - An array that accumulates the schema entries (default is an empty array).
-   * @returns An array representing the schema for the Markdown conversion.
-   */
-  static toMarkdownSchema(data: Record<string, unknown>, level: number = 1, schema: MarkdownSchema[] = []) {
-    if (!data) return [];
-    const heading = `h${Math.min(level, 6)}`;
+  private convert(data: unknown): void {
+    if (!data) return;
+    if (Array.isArray(data)) {
+      this.convertFromArray(data);
+      return;
+    }
+    if (typeof data === 'object') {
+      this.convertFromObject(data as Record<string, unknown>);
+      return;
+    }
+    this.convertFromPrimitive(data);
+  }
+
+  private convertFromArray(data: unknown[], indent: number = 0): MarkdownSchema[] {
+    for (const item of data) {
+      if (Array.isArray(item)) {
+        this.convertFromArray(item, indent + 1);
+        continue;
+      }
+      this.schema.push({
+        li: this.formatValue(item),
+        indent,
+      });
+    }
+    return this.schema;
+  }
+
+  private convertFromObject(data: Record<string, unknown>, level: number = 0): MarkdownSchema[] {
+    const heading = `h${Math.min(Math.max(this.startLevel, 1) + level, 6)}`;
     for (let [key, value] of Object.entries(data)) {
-      if (key.startsWith('_')) continue;
       key = key.trim();
       if (typeof value === 'string') {
         value = value.trim().replaceAll('\\n', '\n');
       }
-      schema.push({ [heading]: key });
+      this.schema.push({
+        [heading]: key,
+      });
       if (Array.isArray(value)) {
         const [item] = value;
-        if (Array.isArray(item) && item.length > 0) {
-          schema.push({ ul: value.map(item => JSON.stringify(item)) });
-          continue;
-        }
         if (typeof item === 'object') {
-          Converter.toMarkdownSchema(item, level + 1, schema);
+          this.schema.push({
+            tr: Object.keys(item),
+          });
+          value.forEach((item) => {
+            this.schema.push({
+              td: Object.values(item).map(v => this.formatValue(v)),
+            });
+          });
+          this.schema.push({
+            br: '',
+          });
           continue;
         }
-        schema.push({ ul: value.map(item => typeof item === 'string' ? item : JSON.stringify(item)) });
+        this.convertFromArray(value);
+        this.schema.push({
+          br: '',
+        });
         continue;
       }
       if (typeof value === 'object') {
-        Converter.toMarkdownSchema(value as Record<string, unknown>, level + 1, schema);
+        this.convertFromObject(value as Record<string, unknown>, level + 1);
         continue;
       }
-      schema.push({ p: value as string });
+      this.convertFromPrimitive(value);
     }
-    return schema;
+    return this.schema;
+  }
+
+  private convertFromPrimitive(value: unknown): MarkdownSchema[] {
+    this.schema.push({
+      p: this.formatValue(value),
+    });
+    return this.schema;
+  }
+
+  private formatValue(value: unknown): string {
+    if (Array.isArray(value)) {
+      return value.map(v => this.formatValue(v)).join(', ');
+    }
+    if (typeof value === 'object') {
+      return JSON.stringify(value);
+    }
+    return String(value);
+  }
+
+  private toTitleCase(value: string): string {
+    if (this.disableTitleCase) return value;
+    return toTitleCase(value);
   }
 }
 

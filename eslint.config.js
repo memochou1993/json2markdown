@@ -1,8 +1,16 @@
 import pluginJs from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default [
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended,
+  stylistic.configs.customize({
+    semi: true,
+    jsx: true,
+    braceStyle: '1tbs',
+  }),
   {
     files: [
       '**/*.{js,mjs,cjs,ts}',
@@ -18,18 +26,17 @@ export default [
       globals: globals.node,
     },
   },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
   {
     rules: {
-      '@typescript-eslint/ban-ts-comment': 'off',
-      'comma-dangle': ['error', 'always-multiline'],
-      'eol-last': ['error', 'always'],
-      'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
-      'object-curly-spacing': ['error', 'always'],
-      indent: ['error', 2],
-      quotes: ['error', 'single'],
-      semi: ['error', 'always'],
+      'curly': ['error', 'multi-line'],
+      'dot-notation': 'error',
+      'no-console': ['warn', { allow: ['warn', 'error', 'debug'] }],
+      'no-lonely-if': 'error',
+      'no-useless-rename': 'error',
+      'object-shorthand': 'error',
+      'prefer-const': ['error', { destructuring: 'any', ignoreReadBeforeAssign: false }],
+      'require-await': 'error',
+      'sort-imports': ['error', { ignoreDeclarationSort: true }],
     },
   },
 ];
