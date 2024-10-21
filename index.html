@@ -4,17 +4,25 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>json2markdown</title>
+    <title>JSON2MD</title>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
     <script src="dist/index.umd.js"></script>
     <script>
-      const markdown = window.JSON2MD.Converter.toMarkdown({
+      const output = window.JSON2MD.Converter.toMarkdown({
         'Hello, World!': 'It works!',
+      }, {
+        onConvert: (element) => {
+          if (element.tag === 'heading') {
+            element.level += 1;
+          }
+          return element;
+        },
       });
-      console.log(JSON.stringify(markdown));
+
+      console.log(JSON.stringify(output));
     </script>
   </body>
 </html>

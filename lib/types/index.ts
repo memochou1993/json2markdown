@@ -1,5 +1,7 @@
-import MarkdownSchema from './MarkdownSchema';
+import Element from './Element';
+import HeadingLevel from './HeadingLevel';
 
 export type {
-  MarkdownSchema,
+  Element,
+  HeadingLevel,
 };

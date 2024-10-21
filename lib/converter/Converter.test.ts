@@ -1,90 +1,275 @@
+import { toTitleCase } from '@memochou1993/stryle';
 import fs from 'fs';
 import { describe, expect, test } from 'vitest';
+import { Tags } from '~/constants';
 import Converter from './Converter';
 
 const OUTPUT_DIR = '.output';
 
 describe('Converter', () => {
-  test('should convert from array', () => {
-    // @ts-expect-error Ignore error for testing private method
-    const actual = new Converter(undefined).convertFromArray([
-      1,
-      [
-        2,
+  describe('should convert an array', () => {
+    test('with values to elements', () => {
+      // @ts-expect-error Ignore error for testing private method
+      const converter = new Converter(undefined).convertFromArray([
+        'foo',
         [
-          3,
+          'bar',
+          [
+            'baz',
+          ],
         ],
-      ],
-    ]);
+      ]);
 
-    const expected = [
-      { li: '1', indent: 0 },
-      { li: '2', indent: 1 },
-      { li: '3', indent: 2 },
-    ];
+      const actual = converter.getElements();
 
-    expect(actual).toStrictEqual(expected);
+      const expected = [
+        { tag: Tags.LI, value: 'foo', indent: 0 },
+        { tag: Tags.LI, value: 'bar', indent: 1 },
+        { tag: Tags.LI, value: 'baz', indent: 2 },
+      ];
+
+      expect(actual).toStrictEqual(expected);
+    });
+
+    test('with undefined values to elements', () => {
+      // @ts-expect-error Ignore error for testing private method
+      const converter = new Converter(undefined).convertFromArray([
+        undefined,
+        [
+          undefined,
+          [
+            undefined,
+          ],
+        ],
+      ]);
+
+      const actual = converter.getElements();
+
+      const expected = [
+        { tag: Tags.LI, value: '', indent: 0 },
+        { tag: Tags.LI, value: '', indent: 1 },
+        { tag: Tags.LI, value: '', indent: 2 },
+      ];
+
+      expect(actual).toStrictEqual(expected);
+    });
+
+    test('with null values to elements', () => {
+      // @ts-expect-error Ignore error for testing private method
+      const converter = new Converter(undefined).convertFromArray([
+        null,
+        [
+          null,
+          [
+            null,
+          ],
+        ],
+      ]);
+
+      const actual = converter.getElements();
+
+      const expected = [
+        { tag: Tags.LI, value: '', indent: 0 },
+        { tag: Tags.LI, value: '', indent: 1 },
+        { tag: Tags.LI, value: '', indent: 2 },
+      ];
+
+      expect(actual).toStrictEqual(expected);
+    });
+
+    test('with empty array values to elements', () => {
+      // @ts-expect-error Ignore error for testing private method
+      const converter = new Converter(undefined).convertFromArray([
+        [],
+        [
+          [],
+          [
+            [],
+          ],
+        ],
+      ]);
+
+      const actual = converter.getElements();
+
+      const expected = [] as Element[];
+
+      expect(actual).toStrictEqual(expected);
+    });
+
+    test('with empty object values to elements', () => {
+      // @ts-expect-error Ignore error for testing private method
+      const converter = new Converter(undefined).convertFromArray([
+        {},
+        [
+          {},
+          [
+            {},
+          ],
+        ],
+      ]);
+
+      const actual = converter.getElements();
+
+      const expected = [
+        { tag: Tags.LI, value: '{}', indent: 0 },
+        { tag: Tags.LI, value: '{}', indent: 1 },
+        { tag: Tags.LI, value: '{}', indent: 2 },
+      ];
+
+      expect(actual).toStrictEqual(expected);
+    });
+
+    test('without values to elements', () => {
+      // @ts-expect-error Ignore error for testing private method
+      const converter = new Converter(undefined).convertFromArray(null);
+
+      const actual = converter.getElements();
+
+      const expected = [
+        { tag: Tags.P, value: '' },
+      ];
+
+      expect(actual).toStrictEqual(expected);
+    });
   });
 
-  test('should convert from object', () => {
-    // @ts-expect-error Ignore error for testing private method
-    const actual = new Converter(undefined).convertFromObject({
+  describe('should convert an object', () => {
+    test('with values to elements', () => {
+      // @ts-expect-error Ignore error for testing private method
+      const converter = new Converter(undefined).convertFromObject({
+        foo: 'bar',
+      });
+
+      const actual = converter.getElements();
+
+      const expected = [
+        { tag: Tags.HEADING, level: 1, value: 'foo' },
+        { tag: Tags.P, value: 'bar' },
+      ];
+
+      expect(actual).toStrictEqual(expected);
+    });
+
+    test('without values to elements', () => {
+      // @ts-expect-error Ignore error for testing private method
+      const converter = new Converter(undefined).convertFromObject(null);
+
+      const actual = converter.getElements();
+
+      const expected = [
+        { tag: Tags.P, value: '' },
+      ];
+
+      expect(actual).toStrictEqual(expected);
+    });
+  });
+
+  describe('should convert a primitive', () => {
+    test('with values to elements', () => {
+      // @ts-expect-error Ignore error for testing private method
+      const converter = new Converter(undefined).convertFromPrimitive('foo');
+
+      const actual = converter.getElements();
+
+      const expected = [
+        { tag: Tags.P, value: 'foo' },
+      ];
+
+      expect(actual).toStrictEqual(expected);
+    });
+
+    test('without values to elements', () => {
+      // @ts-expect-error Ignore error for testing private method
+      const converter = new Converter(undefined).convertFromPrimitive(null);
+
+      const actual = converter.getElements();
+
+      const expected = [
+        { tag: Tags.P, value: '' },
+      ];
+
+      expect(actual).toStrictEqual(expected);
+    });
+  });
+
+  test('should ignore specified elements', () => {
+    const converter = new Converter({
       foo: 'bar',
+      _ignored: 'ignored',
+      _ignored_object: {
+        foo: 'bar',
+      },
+      nested: {
+        foo: 'bar',
+        _ignored: 'ignored',
+        _ignored_object: {
+          foo: 'bar',
+        },
+      },
+    }, {
+      onConvert: (element) => {
+        if (element.tag === Tags.HEADING && element.value.startsWith('_')) {
+          return;
+        }
+        return element;
+      },
     });
 
+    const actual = converter.getElements();
+
     const expected = [
-      { h1: 'foo' },
-      { p: 'bar' },
+      { tag: Tags.HEADING, level: 1, value: 'foo' },
+      { tag: Tags.P, value: 'bar' },
+      { tag: Tags.HEADING, level: 1, value: 'nested' },
+      { tag: Tags.HEADING, level: 2, value: 'foo' },
+      { tag: Tags.P, value: 'bar' },
     ];
 
     expect(actual).toStrictEqual(expected);
   });
 
-  test('should convert from primitive', () => {
-    // @ts-expect-error Ignore error for testing private method
-    const actual = new Converter(undefined).convertFromPrimitive('foo');
+  test('should apply the specified heading level', () => {
+    const converter = new Converter({
+      foo: 'bar',
+    }, {
+      onConvert: (element) => {
+        if (element.tag === Tags.HEADING) {
+          element.level += 1;
+        }
+        return element;
+      },
+    });
+
+    const actual = converter.getElements();
 
     const expected = [
-      { p: 'foo' },
+      { tag: Tags.HEADING, level: 2, value: 'foo' },
+      { tag: Tags.P, value: 'bar' },
     ];
 
     expect(actual).toStrictEqual(expected);
   });
 
-  test('should start from specified heading level', () => {
-    const data = {
-      heading_2: 'Hello, World!',
-    };
-
-    const actual = Converter.toMarkdown(data, {
-      initialHeadingLevel: 2,
+  test('should apply the heading value in title case', () => {
+    const converter = new Converter({
+      foo: 'bar',
+    }, {
+      onConvert: (element) => {
+        if (element.tag === Tags.HEADING) {
+          element.value = toTitleCase(element.value);
+        }
+        return element;
+      },
     });
 
-    const expected = `## Heading 2
+    const actual = converter.getElements();
 
-Hello, World!
+    const expected = [
+      { tag: Tags.HEADING, level: 1, value: 'Foo' },
+      { tag: Tags.P, value: 'bar' },
+    ];
 
-`;
-
-    expect(actual).toBe(expected);
-  });
-
-  test('should disable title case', () => {
-    const data = {
-      heading_1: 'Hello, World!',
-    };
-
-    const actual = Converter.toMarkdown(data, {
-      disableTitleCase: true,
-    });
-
-    const expected = `# heading_1
-
-Hello, World!
-
-`;
-
-    expect(actual).toBe(expected);
+    expect(actual).toStrictEqual(expected);
   });
 
   test('should convert correctly', () => {
@@ -135,6 +320,9 @@ Hello, World!
         },
       ],
       array: [
+        {
+          foo: 'bar',
+        },
         1,
         [
           2,
@@ -150,7 +338,17 @@ Hello, World!
       markdown_table: '| foo | bar | baz |\n| --- | --- | --- |\n| 1 | 2 | 3 |',
     };
 
-    const converter = new Converter(data);
+    const converter = new Converter(data, {
+      onConvert: (element) => {
+        if (element.tag === Tags.HEADING) {
+          element.value = toTitleCase(element.value);
+        }
+        if (element.tag === Tags.TR) {
+          element.values = element.values.map(value => toTitleCase(String(value)));
+        }
+        return element;
+      },
+    });
 
     const actual = converter.toMarkdown();
 
@@ -204,6 +402,7 @@ Hello, World!
 
 # Array
 
+- {"foo":"bar"}
 - 1
   - 2
     - 3
