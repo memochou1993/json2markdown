@@ -44,7 +44,12 @@ class Converter {
           case Tags.PRE:
             return `\`\`\`\n${element.value}\n\`\`\`\n\n`;
           case Tags.TD:
-            return `| ${element.values.join(' | ')} |\n`;
+            return `| ${element.values.map((value) => {
+              if (typeof value === 'string') {
+                return value.replaceAll('\n', '<br>');
+              }
+              return value;
+            }).join(' | ')} |\n`;
           case Tags.TR:
             return `| ${element.values.join(' | ')} |\n| ${element.values.map(() => '---').join(' | ')} |\n`;
           default:
