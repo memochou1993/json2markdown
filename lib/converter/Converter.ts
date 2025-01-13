@@ -10,20 +10,20 @@ class Converter {
 
   private onConvert: (element: Element) => Element | undefined;
 
-  constructor(data: unknown, options: ConverterOptions = {}) {
+  constructor(json: unknown, options: ConverterOptions = {}) {
     this.onConvert = options.onConvert ?? ((element: Element) => element);
-    if (data) this.convert(data);
+    if (json) this.convert(json);
   }
 
   /**
-   * Converts the provided data into Markdown format.
+   * Converts the provided json into Markdown format.
    */
-  public static toMarkdown(data: unknown, options: ConverterOptions = {}): string {
-    return new Converter(data, options).toMarkdown();
+  public static toMarkdown(json: unknown, options: ConverterOptions = {}): string {
+    return new Converter(json, options).toMarkdown();
   }
 
   /**
-   * Converts the provided data into Markdown format.
+   * Converts the provided json into Markdown format.
    */
   public toMarkdown(): string {
     return this.elements
@@ -70,12 +70,13 @@ class Converter {
     return true;
   }
 
-  private convert(data: unknown): void {
+  private convert(json: unknown): void {
+    const data = typeof json === 'string' ? JSON.parse(json) : json;
     if (Array.isArray(data)) {
       this.convertFromArray(data);
       return;
     }
-    this.convertFromObject(data as Record<string, unknown>);
+    this.convertFromObject(data);
   }
 
   private convertFromArray(data: unknown[], indent: number = 0): this {

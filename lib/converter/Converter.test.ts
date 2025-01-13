@@ -192,87 +192,22 @@ describe('Converter', () => {
     });
   });
 
-  test('should ignore specified elements', () => {
-    const converter = new Converter({
+  test('should convert a JSON string to markdown', () => {
+    const converter = new Converter(JSON.stringify({
       foo: 'bar',
-      _ignored: 'ignored',
-      _ignored_object: {
-        foo: 'bar',
-      },
-      nested: {
-        foo: 'bar',
-        _ignored: 'ignored',
-        _ignored_object: {
-          foo: 'bar',
-        },
-      },
-    }, {
-      onConvert: (element) => {
-        if (element.tag === Tags.HEADING && element.value.startsWith('_')) {
-          return;
-        }
-        return element;
-      },
-    });
+    }));
 
     const actual = converter.getElements();
 
     const expected = [
       { tag: Tags.HEADING, level: 1, value: 'foo' },
       { tag: Tags.P, value: 'bar' },
-      { tag: Tags.HEADING, level: 1, value: 'nested' },
-      { tag: Tags.HEADING, level: 2, value: 'foo' },
-      { tag: Tags.P, value: 'bar' },
     ];
 
     expect(actual).toStrictEqual(expected);
   });
 
-  test('should apply the specified heading level', () => {
-    const converter = new Converter({
-      foo: 'bar',
-    }, {
-      onConvert: (element) => {
-        if (element.tag === Tags.HEADING) {
-          element.level += 1;
-        }
-        return element;
-      },
-    });
-
-    const actual = converter.getElements();
-
-    const expected = [
-      { tag: Tags.HEADING, level: 2, value: 'foo' },
-      { tag: Tags.P, value: 'bar' },
-    ];
-
-    expect(actual).toStrictEqual(expected);
-  });
-
-  test('should apply the heading value in title case', () => {
-    const converter = new Converter({
-      foo: 'bar',
-    }, {
-      onConvert: (element) => {
-        if (element.tag === Tags.HEADING) {
-          element.value = toTitleCase(element.value);
-        }
-        return element;
-      },
-    });
-
-    const actual = converter.getElements();
-
-    const expected = [
-      { tag: Tags.HEADING, level: 1, value: 'Foo' },
-      { tag: Tags.P, value: 'bar' },
-    ];
-
-    expect(actual).toStrictEqual(expected);
-  });
-
-  test('should convert correctly', () => {
+  test('should convert a JSON object to markdown', () => {
     const data = {
       heading_1: 'Hello, World!',
       nested: {
@@ -427,5 +362,85 @@ console.log('Hello, World!');
     fs.writeFileSync(`${OUTPUT_DIR}/expected.md`, expected);
 
     expect(actual).toBe(expected);
+  });
+
+  test('should ignore specified elements', () => {
+    const converter = new Converter({
+      foo: 'bar',
+      _ignored: 'ignored',
+      _ignored_object: {
+        foo: 'bar',
+      },
+      nested: {
+        foo: 'bar',
+        _ignored: 'ignored',
+        _ignored_object: {
+          foo: 'bar',
+        },
+      },
+    }, {
+      onConvert: (element) => {
+        if (element.tag === Tags.HEADING && element.value.startsWith('_')) {
+          return;
+        }
+        return element;
+      },
+    });
+
+    const actual = converter.getElements();
+
+    const expected = [
+      { tag: Tags.HEADING, level: 1, value: 'foo' },
+      { tag: Tags.P, value: 'bar' },
+      { tag: Tags.HEADING, level: 1, value: 'nested' },
+      { tag: Tags.HEADING, level: 2, value: 'foo' },
+      { tag: Tags.P, value: 'bar' },
+    ];
+
+    expect(actual).toStrictEqual(expected);
+  });
+
+  test('should apply the specified heading level', () => {
+    const converter = new Converter({
+      foo: 'bar',
+    }, {
+      onConvert: (element) => {
+        if (element.tag === Tags.HEADING) {
+          element.level += 1;
+        }
+        return element;
+      },
+    });
+
+    const actual = converter.getElements();
+
+    const expected = [
+      { tag: Tags.HEADING, level: 2, value: 'foo' },
+      { tag: Tags.P, value: 'bar' },
+    ];
+
+    expect(actual).toStrictEqual(expected);
+  });
+
+  test('should apply the heading value in title case format', () => {
+    const converter = new Converter({
+      foo: 'bar',
+    }, {
+      onConvert: (element) => {
+        if (element.tag === Tags.HEADING) {
+          element.value = toTitleCase(element.value);
+        }
+        return element;
+      },
+    });
+
+    const actual = converter.getElements();
+
+    const expected = [
+      { tag: Tags.HEADING, level: 1, value: 'Foo' },
+      { tag: Tags.P, value: 'bar' },
+    ];
+
+    expect(actual).toStrictEqual(expected);
   });
 });
