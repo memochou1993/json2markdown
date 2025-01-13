@@ -34,7 +34,7 @@ Include the UMD script in your HTML file and use it:
 ```html
 <script src="https://unpkg.com/@memochou1993/json2markdown/dist/index.umd.js"></script>
 <script>
-const output = window.JSON2MD.Converter.toMarkdown({
+const output = window.JSON2MARKDOWN.Converter.toMarkdown({
   'Hello, World!': 'It works!',
 }, {
   onConvert: (element) => {
