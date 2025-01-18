@@ -1,31 +1,31 @@
 import Tags from '~/constants/Tags';
 import { Element, HeadingLevel } from '~/types';
 
-interface ConverterOptions {
-  onConvert?: (element: Element) => Element | undefined;
-}
+type ConvertHandler = (element: Element) => Element | undefined;
 
 class Converter {
+  private data: unknown;
+
   private elements: Element[] = [];
 
-  private onConvert: (element: Element) => Element | undefined;
+  private onConvert: ConvertHandler = element => element;
 
-  constructor(json: unknown, options: ConverterOptions = {}) {
-    this.onConvert = options.onConvert ?? ((element: Element) => element);
-    if (json) this.convert(json);
+  constructor(data: unknown) {
+    this.data = typeof data === 'string' ? JSON.parse(data) : data;
   }
 
   /**
-   * Converts the provided json into Markdown format.
+   * Converts the provided data into Markdown format.
    */
-  public static toMarkdown(json: unknown, options: ConverterOptions = {}): string {
-    return new Converter(json, options).toMarkdown();
+  public static toMarkdown(data: unknown, callback?: ConvertHandler): string {
+    return new Converter(data).toMarkdown(callback);
   }
 
   /**
-   * Converts the provided json into Markdown format.
+   * Converts the provided data into Markdown format.
    */
-  public toMarkdown(): string {
+  public toMarkdown(callback?: ConvertHandler): string {
+    this.convert(callback);
     return this.elements
       .map((element) => {
         switch (element.tag) {
@@ -70,13 +70,15 @@ class Converter {
     return true;
   }
 
-  private convert(json: unknown): void {
-    const data = typeof json === 'string' ? JSON.parse(json) : json;
-    if (Array.isArray(data)) {
-      this.convertFromArray(data);
-      return;
+  private convert(callback?: ConvertHandler): this {
+    if (callback) {
+      this.onConvert = callback;
     }
-    this.convertFromObject(data);
+    if (Array.isArray(this.data)) {
+      this.convertFromArray(this.data);
+    }
+    this.convertFromObject(this.data as Record<string, unknown>);
+    return this;
   }
 
   private convertFromArray(data: unknown[], indent: number = 0): this {
