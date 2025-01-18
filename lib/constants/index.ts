@@ -1,5 +1,5 @@
-import Tags from './Tags';
+import Tag from './Tag';
 
 export {
-  Tags,
+  Tag,
 };

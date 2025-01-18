@@ -1,4 +1,4 @@
-import Tags from '~/constants/Tags';
+import { Tag } from '~/constants';
 import { Element, HeadingLevel } from '~/types';
 
 type ConvertHandler = (element: Element) => Element | undefined;
@@ -29,28 +29,32 @@ class Converter {
     return this.elements
       .map((element) => {
         switch (element.tag) {
-          case Tags.A:
+          case Tag.A:
             return `[${element.value}](${element.href})\n\n`;
-          case Tags.BR:
+          case Tag.BLOCKQUOTE:
+            return `> ${element.value}\n\n`;
+          case Tag.BR:
             return '\n';
-          case Tags.HEADING:
+          case Tag.HEADING:
             return `${'#'.repeat(Math.max(1, Math.min(6, element.level)))} ${element.value}\n\n`;
-          case Tags.IMG:
+          case Tag.HR:
+            return '---\n\n';
+          case Tag.IMG:
             return `![${element.alt}](${element.src})\n\n`;
-          case Tags.LI:
+          case Tag.LI:
             return `${'  '.repeat(element.indent)}- ${element.value}\n`;
-          case Tags.P:
+          case Tag.P:
             return `${element.value}\n\n`;
-          case Tags.PRE:
+          case Tag.PRE:
             return `\`\`\`\n${element.value}\n\`\`\`\n\n`;
-          case Tags.TD:
+          case Tag.TD:
             return `| ${element.values.map((value) => {
               if (typeof value === 'string') {
                 return value.replaceAll('\n', '<br>');
               }
               return value;
             }).join(' | ')} |\n`;
-          case Tags.TR:
+          case Tag.TR:
             return `| ${element.values.join(' | ')} |\n| ${element.values.map(() => '---').join(' | ')} |\n`;
           default:
             return '';
@@ -89,12 +93,12 @@ class Converter {
     if (data.length > 0 && data.every(item => typeof item === 'object' && item !== null && Object.keys(item).length > 0)) {
       const [item] = data;
       this.pushElement({
-        tag: Tags.TR,
+        tag: Tag.TR,
         values: Object.keys(item as object),
       });
       data.forEach((item) => {
         this.pushElement({
-          tag: Tags.TD,
+          tag: Tag.TD,
           values: Object.values(item as object).map(value => this.formatValue(value)),
         });
       });
@@ -106,7 +110,7 @@ class Converter {
         continue;
       }
       this.pushElement({
-        tag: Tags.LI,
+        tag: Tag.LI,
         value: this.formatValue(item),
         indent,
       });
@@ -121,7 +125,7 @@ class Converter {
     }
     for (const [key, value] of Object.entries(data)) {
       const isPushed = this.pushElement({
-        tag: Tags.HEADING,
+        tag: Tag.HEADING,
         value: key,
         level: level + 1 as HeadingLevel,
       });
@@ -131,7 +135,7 @@ class Converter {
       if (Array.isArray(value)) {
         this.convertFromArray(value);
         this.pushElement({
-          tag: Tags.BR,
+          tag: Tag.BR,
         });
         continue;
       }
@@ -146,7 +150,7 @@ class Converter {
 
   private convertFromPrimitive(value: unknown): this {
     this.pushElement({
-      tag: Tags.P,
+      tag: Tag.P,
       value: this.formatValue(value),
     });
     return this;

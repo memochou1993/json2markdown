@@ -1,7 +1,9 @@
-const Tags = {
+const Tag = {
   A: 'a',
+  BLOCKQUOTE: 'blockquote',
   BR: 'br',
   HEADING: 'heading',
+  HR: 'hr',
   IMG: 'img',
   LI: 'li',
   P: 'p',
@@ -10,4 +12,4 @@ const Tags = {
   TR: 'tr',
 } as const;
 
-export default Tags;
+export default Tag;

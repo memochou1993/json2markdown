@@ -1,7 +1,7 @@
 import { toTitleCase } from '@memochou1993/stryle';
 import fs from 'fs';
 import { describe, expect, test } from 'vitest';
-import { Tags } from '~/constants';
+import { Tag } from '~/constants';
 import Converter from './Converter';
 
 const OUTPUT_DIR = '.output';
@@ -23,9 +23,9 @@ describe('Converter', () => {
       const actual = converter.getElements();
 
       const expected = [
-        { tag: Tags.LI, value: 'foo', indent: 0 },
-        { tag: Tags.LI, value: 'bar', indent: 1 },
-        { tag: Tags.LI, value: 'baz', indent: 2 },
+        { tag: Tag.LI, value: 'foo', indent: 0 },
+        { tag: Tag.LI, value: 'bar', indent: 1 },
+        { tag: Tag.LI, value: 'baz', indent: 2 },
       ];
 
       expect(actual).toStrictEqual(expected);
@@ -46,9 +46,9 @@ describe('Converter', () => {
       const actual = converter.getElements();
 
       const expected = [
-        { tag: Tags.LI, value: '', indent: 0 },
-        { tag: Tags.LI, value: '', indent: 1 },
-        { tag: Tags.LI, value: '', indent: 2 },
+        { tag: Tag.LI, value: '', indent: 0 },
+        { tag: Tag.LI, value: '', indent: 1 },
+        { tag: Tag.LI, value: '', indent: 2 },
       ];
 
       expect(actual).toStrictEqual(expected);
@@ -69,9 +69,9 @@ describe('Converter', () => {
       const actual = converter.getElements();
 
       const expected = [
-        { tag: Tags.LI, value: '', indent: 0 },
-        { tag: Tags.LI, value: '', indent: 1 },
-        { tag: Tags.LI, value: '', indent: 2 },
+        { tag: Tag.LI, value: '', indent: 0 },
+        { tag: Tag.LI, value: '', indent: 1 },
+        { tag: Tag.LI, value: '', indent: 2 },
       ];
 
       expect(actual).toStrictEqual(expected);
@@ -111,9 +111,9 @@ describe('Converter', () => {
       const actual = converter.getElements();
 
       const expected = [
-        { tag: Tags.LI, value: '{}', indent: 0 },
-        { tag: Tags.LI, value: '{}', indent: 1 },
-        { tag: Tags.LI, value: '{}', indent: 2 },
+        { tag: Tag.LI, value: '{}', indent: 0 },
+        { tag: Tag.LI, value: '{}', indent: 1 },
+        { tag: Tag.LI, value: '{}', indent: 2 },
       ];
 
       expect(actual).toStrictEqual(expected);
@@ -126,7 +126,7 @@ describe('Converter', () => {
       const actual = converter.getElements();
 
       const expected = [
-        { tag: Tags.P, value: '' },
+        { tag: Tag.P, value: '' },
       ];
 
       expect(actual).toStrictEqual(expected);
@@ -143,8 +143,8 @@ describe('Converter', () => {
       const actual = converter.getElements();
 
       const expected = [
-        { tag: Tags.HEADING, level: 1, value: 'foo' },
-        { tag: Tags.P, value: 'bar' },
+        { tag: Tag.HEADING, level: 1, value: 'foo' },
+        { tag: Tag.P, value: 'bar' },
       ];
 
       expect(actual).toStrictEqual(expected);
@@ -157,7 +157,7 @@ describe('Converter', () => {
       const actual = converter.getElements();
 
       const expected = [
-        { tag: Tags.P, value: '' },
+        { tag: Tag.P, value: '' },
       ];
 
       expect(actual).toStrictEqual(expected);
@@ -172,7 +172,7 @@ describe('Converter', () => {
       const actual = converter.getElements();
 
       const expected = [
-        { tag: Tags.P, value: 'foo' },
+        { tag: Tag.P, value: 'foo' },
       ];
 
       expect(actual).toStrictEqual(expected);
@@ -185,7 +185,7 @@ describe('Converter', () => {
       const actual = converter.getElements();
 
       const expected = [
-        { tag: Tags.P, value: '' },
+        { tag: Tag.P, value: '' },
       ];
 
       expect(actual).toStrictEqual(expected);
@@ -199,7 +199,7 @@ describe('Converter', () => {
       }));
 
       const actual = converter.toMarkdown((element) => {
-        if (element.tag === Tags.HEADING) {
+        if (element.tag === Tag.HEADING) {
           element.value = toTitleCase(element.value);
         }
         return element;
@@ -215,15 +215,14 @@ bar
     });
 
     test('using the static method', () => {
-      const actual = Converter
-        .toMarkdown(JSON.stringify({
-          foo: 'bar',
-        }), (element) => {
-          if (element.tag === Tags.HEADING) {
-            element.value = toTitleCase(element.value);
-          }
-          return element;
-        });
+      const actual = Converter.toMarkdown(JSON.stringify({
+        foo: 'bar',
+      }), (element) => {
+        if (element.tag === Tag.HEADING) {
+          element.value = toTitleCase(element.value);
+        }
+        return element;
+      });
 
       const expected = `# Foo
 
@@ -255,7 +254,7 @@ bar
       const actual = converter
         // @ts-expect-error Ignore error for testing private method
         .convert((element) => {
-          if (element.tag === Tags.HEADING && element.value.startsWith('_')) {
+          if (element.tag === Tag.HEADING && element.value.startsWith('_')) {
             return;
           }
           return element;
@@ -263,11 +262,11 @@ bar
         .getElements();
 
       const expected = [
-        { tag: Tags.HEADING, level: 1, value: 'foo' },
-        { tag: Tags.P, value: 'bar' },
-        { tag: Tags.HEADING, level: 1, value: 'nested' },
-        { tag: Tags.HEADING, level: 2, value: 'foo' },
-        { tag: Tags.P, value: 'bar' },
+        { tag: Tag.HEADING, level: 1, value: 'foo' },
+        { tag: Tag.P, value: 'bar' },
+        { tag: Tag.HEADING, level: 1, value: 'nested' },
+        { tag: Tag.HEADING, level: 2, value: 'foo' },
+        { tag: Tag.P, value: 'bar' },
       ];
 
       expect(actual).toStrictEqual(expected);
@@ -281,7 +280,7 @@ bar
       const actual = converter
         // @ts-expect-error Ignore error for testing private method
         .convert((element) => {
-          if (element.tag === Tags.HEADING) {
+          if (element.tag === Tag.HEADING) {
             element.level += 1;
           }
           return element;
@@ -289,8 +288,8 @@ bar
         .getElements();
 
       const expected = [
-        { tag: Tags.HEADING, level: 2, value: 'foo' },
-        { tag: Tags.P, value: 'bar' },
+        { tag: Tag.HEADING, level: 2, value: 'foo' },
+        { tag: Tag.P, value: 'bar' },
       ];
 
       expect(actual).toStrictEqual(expected);
@@ -304,7 +303,7 @@ bar
       const actual = converter
         // @ts-expect-error Ignore error for testing private method
         .convert((element) => {
-          if (element.tag === Tags.HEADING) {
+          if (element.tag === Tag.HEADING) {
             element.value = toTitleCase(element.value);
           }
           return element;
@@ -312,8 +311,8 @@ bar
         .getElements();
 
       const expected = [
-        { tag: Tags.HEADING, level: 1, value: 'Foo' },
-        { tag: Tags.P, value: 'bar' },
+        { tag: Tag.HEADING, level: 1, value: 'Foo' },
+        { tag: Tag.P, value: 'bar' },
       ];
 
       expect(actual).toStrictEqual(expected);
@@ -321,6 +320,57 @@ bar
   });
 
   describe('should convert', () => {
+    test('by changing tags', () => {
+      const converter = new Converter({
+        foo: 'bar',
+        divider: 'divider',
+        image: 'image',
+        blockquote: 'blockquote',
+      });
+
+      const actual = converter.toMarkdown((element) => {
+        if (element.tag === Tag.P && element.value === 'divider') {
+          return {
+            tag: Tag.HR,
+          };
+        }
+        if (element.tag === Tag.P && element.value === 'image') {
+          return {
+            tag: Tag.IMG,
+            src: 'https://example.com/image.png',
+            alt: element.value,
+          };
+        }
+        if (element.tag === Tag.P && element.value === 'blockquote') {
+          return {
+            tag: Tag.BLOCKQUOTE,
+            value: element.value,
+          };
+        }
+        return element;
+      });
+
+      const expected = `# foo
+
+bar
+
+# divider
+
+---
+
+# image
+
+![image](https://example.com/image.png)
+
+# blockquote
+
+> blockquote
+
+`;
+
+      expect(actual).toStrictEqual(expected);
+    });
+
     test('to markdown', () => {
       const data = {
         heading_1: 'Hello, World!',
@@ -390,10 +440,10 @@ bar
       const converter = new Converter(data);
 
       const actual = converter.toMarkdown((element) => {
-        if (element.tag === Tags.HEADING) {
+        if (element.tag === Tag.HEADING) {
           element.value = toTitleCase(element.value);
         }
-        if (element.tag === Tags.TR) {
+        if (element.tag === Tag.TR) {
           element.values = element.values.map(value => toTitleCase(String(value)));
         }
         return element;
