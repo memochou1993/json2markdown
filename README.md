@@ -6,7 +6,7 @@ A simple JSON to Markdown converter that transforms JSON data into Markdown form
 
 ### Using with ES Modules
 
-Import the module and use it:
+To get started with ES Modules, simply import the module and use it in your code:
 
 ```js
 import { Converter } from '@memochou1993/json2markdown';
@@ -21,7 +21,7 @@ const output = Converter.toMarkdown({
 
 ### Using with UMD Modules
 
-Include the script in your HTML file and use it:
+Alternatively, if you're using UMD modules, include the script in your HTML file and use it in your code:
 
 ```html
 <script src="https://unpkg.com/@memochou1993/json2markdown/dist/index.umd.js"></script>
