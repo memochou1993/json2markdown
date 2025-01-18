@@ -17,7 +17,7 @@ export default defineConfig({
     copyPublicDir: false,
     lib: {
       entry: path.resolve(__dirname, 'lib/index.ts'),
-      name: 'JSON2MARKDOWN',
+      name: 'JSON2Markdown',
       fileName: format => format === 'es' ? 'index.js' : `index.${format}.js`,
     },
   },
