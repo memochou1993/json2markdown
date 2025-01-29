@@ -79,10 +79,9 @@ class Converter {
       this.onConvert = callback;
     }
     if (Array.isArray(this.data)) {
-      this.convertFromArray(this.data);
+      return this.convertFromArray(this.data);
     }
-    this.convertFromObject(this.data as Record<string, unknown>);
-    return this;
+    return this.convertFromObject(this.data as Record<string, unknown>);
   }
 
   private convertFromArray(data: unknown[], indent: number = 0): this {
