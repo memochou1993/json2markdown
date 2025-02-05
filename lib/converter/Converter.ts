@@ -95,10 +95,11 @@ class Converter {
         tag: Tag.TR,
         values: Object.keys(item as object),
       });
+      const keys = Object.keys(item as object);
       data.forEach((item) => {
         this.pushElement({
           tag: Tag.TD,
-          values: Object.values(item as object).map(value => this.formatValue(value)),
+          values: keys.map(key => this.formatValue((item as Record<string, unknown>)[key])),
         });
       });
       return this;

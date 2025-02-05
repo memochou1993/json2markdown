@@ -495,7 +495,7 @@ Hello, World!
 | --- | --- | --- | --- | --- |
 | 1 | Alice | alice@example.com | Bob, Charlie | {"theme":"dark"} |
 | 2 | Bob | bob@example.com | Charlie | {<br>  "theme": "light"<br>} |
-| 3 | Charlie | charlie@example.com |  |
+| 3 | Charlie | charlie@example.com |  |  |
 
 # Array
 
