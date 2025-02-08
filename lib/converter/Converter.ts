@@ -29,35 +29,48 @@ class Converter {
     return this.elements
       .map((element) => {
         switch (element.tag) {
-          case Tag.A:
+          case Tag.A: {
             return `[${element.value}](${element.href})\n\n`;
-          case Tag.BLOCKQUOTE:
+          }
+          case Tag.BLOCKQUOTE: {
             return `> ${element.value}\n\n`;
-          case Tag.BR:
+          }
+          case Tag.BR: {
             return '\n';
-          case Tag.HEADING:
+          }
+          case Tag.HEADING: {
             return `${'#'.repeat(Math.max(1, Math.min(6, element.level)))} ${element.value}\n\n`;
-          case Tag.HR:
+          }
+          case Tag.HR: {
             return '---\n\n';
-          case Tag.IMG:
+          }
+          case Tag.IMG: {
             return `![${element.alt}](${element.src})\n\n`;
-          case Tag.LI:
-            return `${'  '.repeat(element.indent)}- ${element.value}\n`;
-          case Tag.P:
+          }
+          case Tag.LI: {
+            const escape = (v: string) => v
+              .replaceAll('\n', ' ')
+              .replace(/(?<=^|\s)(-\s*|\d+\.\s*)/g, match => match.trim());
+            return `${'  '.repeat(element.indent)}- ${escape(element.value)}\n`;
+          }
+          case Tag.P: {
             return `${element.value}\n\n`;
-          case Tag.PRE:
+          }
+          case Tag.PRE: {
             return `\`\`\`\n${element.value}\n\`\`\`\n\n`;
-          case Tag.TD:
-            return `| ${element.values.map((value) => {
-              if (typeof value === 'string') {
-                return value.replaceAll('\n', '<br>');
-              }
-              return value;
-            }).join(' | ')} |\n`;
-          case Tag.TR:
+          }
+          case Tag.TD: {
+            const escape = (v: string) => v
+              .replaceAll('|', '\\|')
+              .replaceAll('\n', '<br>');
+            return `| ${element.values.map(escape).join(' | ')} |\n`;
+          }
+          case Tag.TR: {
             return `| ${element.values.join(' | ')} |\n| ${element.values.map(() => '---').join(' | ')} |\n`;
-          default:
+          }
+          default: {
             return '';
+          }
         }
       })
       .join('');
@@ -156,7 +169,7 @@ class Converter {
     return this;
   }
 
-  private formatValue(value: unknown): unknown {
+  private formatValue(value: unknown): string {
     if (value === undefined || value === null) {
       return '';
     }
@@ -169,7 +182,7 @@ class Converter {
     if (typeof value === 'string') {
       return value.trim();
     }
-    return value;
+    return String(value);
   }
 }
 

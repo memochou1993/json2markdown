@@ -401,27 +401,25 @@ bar
             settings: {
               theme: 'dark',
             },
+            note: '| foo | bar | baz |\n| --- | --- | --- |\n| 1 | 2 | 3 |',
           },
           {
             id: 2,
             name: 'Bob',
             email: 'bob@example.com',
             friends: ['Charlie'],
-            settings: `{
-  "theme": "light"
-}`,
+            settings: JSON.stringify({ theme: 'dark' }),
+            note: '```\n| foo | bar | baz |\n| --- | --- | --- |\n| 1 | 2 | 3 |\n```',
           },
           {
             id: 3,
             name: 'Charlie',
             email: 'charlie@example.com',
             friends: [],
+            settings: `{\n"theme": "dark"\n}`,
           },
         ],
         array: [
-          {
-            foo: 'bar',
-          },
           1,
           [
             2,
@@ -432,6 +430,9 @@ bar
           {
             foo: 'bar',
           },
+          '- foo\n- bar\n- baz',
+          '1. foo\n2. bar\n3. baz',
+          '\\| foo \\| bar \\| baz \\|\n\\| --- \\| --- \\| --- \\|\n\\| 1 \\| 2 \\| 3 \\|',
         ],
         markdown_code: '```\nconsole.log(\'Hello, World!\');\n```',
         markdown_table: '| foo | bar | baz |\n| --- | --- | --- |\n| 1 | 2 | 3 |',
@@ -491,19 +492,21 @@ Hello, World!
 
 # Table
 
-| Id | Name | Email | Friends | Settings |
-| --- | --- | --- | --- | --- |
-| 1 | Alice | alice@example.com | Bob, Charlie | {"theme":"dark"} |
-| 2 | Bob | bob@example.com | Charlie | {<br>  "theme": "light"<br>} |
-| 3 | Charlie | charlie@example.com |  |  |
+| Id | Name | Email | Friends | Settings | Note |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Alice | alice@example.com | Bob, Charlie | {"theme":"dark"} | \\| foo \\| bar \\| baz \\|<br>\\| --- \\| --- \\| --- \\|<br>\\| 1 \\| 2 \\| 3 \\| |
+| 2 | Bob | bob@example.com | Charlie | {"theme":"dark"} | \`\`\`<br>\\| foo \\| bar \\| baz \\|<br>\\| --- \\| --- \\| --- \\|<br>\\| 1 \\| 2 \\| 3 \\|<br>\`\`\` |
+| 3 | Charlie | charlie@example.com |  | {<br>"theme": "dark"<br>} |  |
 
 # Array
 
-- {"foo":"bar"}
 - 1
   - 2
     - 3
 - {"foo":"bar"}
+- -foo -bar -baz
+- 1.foo 2.bar 3.baz
+- \\| foo \\| bar \\| baz \\| \\| --- \\| --- \\| --- \\| \\| 1 \\| 2 \\| 3 \\|
 
 # Markdown Code
 

@@ -34,13 +34,13 @@ export interface ImageElement {
 
 export interface ListItemElement {
   tag: typeof Tag.LI;
-  value: unknown;
+  value: string;
   indent: number;
 }
 
 export interface ParagraphElement {
   tag: typeof Tag.P;
-  value: unknown;
+  value: string;
 }
 
 export interface PreformattedTextElement {
@@ -50,12 +50,12 @@ export interface PreformattedTextElement {
 
 export interface TableDataElement {
   tag: typeof Tag.TD;
-  values: unknown[];
+  values: string[];
 }
 
 export interface TableRowElement {
   tag: typeof Tag.TR;
-  values: unknown[];
+  values: string[];
 }
 
 type Element =
