@@ -1,5 +1,6 @@
 import { Tag } from '~/constants';
 import { Element, HeadingLevel } from '~/types';
+import { safeParseJson } from '~/utils';
 
 type ConvertHandler = (element: Element) => Element | undefined;
 
@@ -11,7 +12,7 @@ class Converter {
   private onConvert: ConvertHandler = element => element;
 
   constructor(data: unknown) {
-    this.data = typeof data === 'string' ? JSON.parse(data) : data;
+    this.setData(data);
   }
 
   /**
@@ -77,6 +78,12 @@ class Converter {
       .replace(/\n{2,}$/, '\n');
   }
 
+  public setData(data: unknown): this {
+    const json = safeParseJson(data);
+    this.data = json ?? data;
+    return this;
+  }
+
   public getElements(): Element[] {
     return this.elements;
   }
@@ -95,7 +102,10 @@ class Converter {
     if (Array.isArray(this.data)) {
       return this.convertFromArray(this.data);
     }
-    return this.convertFromObject(this.data as Record<string, unknown>);
+    if (typeof this.data === 'object') {
+      return this.convertFromObject(this.data as Record<string, unknown>);
+    }
+    return this.convertFromPrimitive(this.data);
   }
 
   private convertFromArray(data: unknown[], indent: number = 0): this {
@@ -180,10 +190,7 @@ class Converter {
     if (typeof value === 'object') {
       return JSON.stringify(value);
     }
-    if (typeof value === 'string') {
-      return value.trim();
-    }
-    return String(value);
+    return String(value).trim();
   }
 }
 

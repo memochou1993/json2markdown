@@ -7,7 +7,7 @@ import Converter from './Converter';
 const OUTPUT_DIR = '.output';
 
 describe('Converter', () => {
-  describe('should convert an array', () => {
+  describe('should convert an array to elements', () => {
     test('with values', () => {
       // @ts-expect-error Ignore error for testing private method
       const converter = new Converter(undefined).convertFromArray([
@@ -133,7 +133,7 @@ describe('Converter', () => {
     });
   });
 
-  describe('should convert an object', () => {
+  describe('should convert an object to elements', () => {
     test('with values', () => {
       // @ts-expect-error Ignore error for testing private method
       const converter = new Converter(undefined).convertFromObject({
@@ -164,7 +164,7 @@ describe('Converter', () => {
     });
   });
 
-  describe('should convert a primitive', () => {
+  describe('should convert a primitive to elements', () => {
     test('with values', () => {
       // @ts-expect-error Ignore error for testing private method
       const converter = new Converter(undefined).convertFromPrimitive('foo');
@@ -192,7 +192,7 @@ describe('Converter', () => {
     });
   });
 
-  describe('should convert a JSON string', () => {
+  describe('should convert a JSON string to markdown', () => {
     test('using the instance method', () => {
       const converter = new Converter(JSON.stringify({
         foo: 'bar',
@@ -232,7 +232,7 @@ bar
     });
   });
 
-  describe('should convert a JSON object', () => {
+  describe('should convert a JSON object to markdown', () => {
     test('by ignoring specified elements', () => {
       const converter = new Converter({
         foo: 'bar',
@@ -315,10 +315,8 @@ bar
 
       expect(actual).toStrictEqual(expected);
     });
-  });
 
-  describe('should convert', () => {
-    test('by changing tags', () => {
+    test('by changing tags to specified tags', () => {
       const converter = new Converter({
         foo: 'bar',
         divider: 'divider',
@@ -367,8 +365,20 @@ bar
 
       expect(actual).toStrictEqual(expected);
     });
+  });
 
-    test('to markdown', () => {
+  describe('should convert to markdown', () => {
+    test('from a primitive', () => {
+      const converter = new Converter('foo');
+
+      const expected = 'foo\n';
+
+      const actual = converter.toMarkdown();
+
+      expect(actual).toBe(expected);
+    });
+
+    test('from a JSON object', () => {
       const data = {
         heading_1: 'Hello, World!',
         nested: {
