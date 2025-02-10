@@ -73,7 +73,8 @@ class Converter {
           }
         }
       })
-      .join('');
+      .join('')
+      .replace(/\n{2,}$/, '\n');
   }
 
   public getElements(): Element[] {

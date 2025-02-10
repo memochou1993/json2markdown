@@ -208,7 +208,6 @@ describe('Converter', () => {
       const expected = `# Foo
 
 bar
-
 `;
 
       expect(actual).toStrictEqual(expected);
@@ -227,7 +226,6 @@ bar
       const expected = `# Foo
 
 bar
-
 `;
 
       expect(actual).toStrictEqual(expected);
@@ -365,7 +363,6 @@ bar
 # blockquote
 
 > blockquote
-
 `;
 
       expect(actual).toStrictEqual(expected);
@@ -519,7 +516,6 @@ console.log('Hello, World!');
 | foo | bar | baz |
 | --- | --- | --- |
 | 1 | 2 | 3 |
-
 `;
 
       if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR);
