@@ -424,6 +424,7 @@ bar
             email: 'charlie@example.com',
             friends: [],
             settings: `{\n"theme": "dark"\n}`,
+            status: 'inactive',
           },
         ],
         array: [
@@ -499,11 +500,11 @@ Hello, World!
 
 # Table
 
-| Id | Name | Email | Friends | Settings | Note |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Alice | alice@example.com | Bob, Charlie | {"theme":"dark"} | \\| foo \\| bar \\| baz \\|<br>\\| --- \\| --- \\| --- \\|<br>\\| 1 \\| 2 \\| 3 \\| |
-| 2 | Bob | bob@example.com | Charlie | {"theme":"dark"} | \`\`\`<br>\\| foo \\| bar \\| baz \\|<br>\\| --- \\| --- \\| --- \\|<br>\\| 1 \\| 2 \\| 3 \\|<br>\`\`\` |
-| 3 | Charlie | charlie@example.com |  | {<br>"theme": "dark"<br>} |  |
+| Id | Name | Email | Friends | Settings | Note | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Alice | alice@example.com | Bob, Charlie | {"theme":"dark"} | \\| foo \\| bar \\| baz \\|<br>\\| --- \\| --- \\| --- \\|<br>\\| 1 \\| 2 \\| 3 \\| |  |
+| 2 | Bob | bob@example.com | Charlie | {"theme":"dark"} | \`\`\`<br>\\| foo \\| bar \\| baz \\|<br>\\| --- \\| --- \\| --- \\|<br>\\| 1 \\| 2 \\| 3 \\|<br>\`\`\` |  |
+| 3 | Charlie | charlie@example.com |  | {<br>"theme": "dark"<br>} |  | inactive |
 
 # Array
 

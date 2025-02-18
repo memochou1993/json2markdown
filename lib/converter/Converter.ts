@@ -114,12 +114,11 @@ class Converter {
       return this;
     }
     if (data.length > 0 && data.every(item => typeof item === 'object' && item !== null && Object.keys(item).length > 0)) {
-      const [item] = data;
+      const keys = [...new Set(data.map(Object.keys as (item: unknown) => string[]).flat())];
       this.pushElement({
         tag: Tag.TR,
-        values: Object.keys(item as object),
+        values: keys,
       });
-      const keys = Object.keys(item as object);
       data.forEach((item) => {
         this.pushElement({
           tag: Tag.TD,
