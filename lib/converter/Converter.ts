@@ -63,7 +63,7 @@ class Converter {
           case Tag.TD: {
             const escape = (v: string) => v
               .replaceAll('|', '\\|')
-              .replaceAll('\n', '<br>');
+              .replace(/\r\n|\r|\n/g, '<br>');
             return `| ${element.values.map(escape).join(' | ')} |\n`;
           }
           case Tag.TR: {
@@ -182,9 +182,6 @@ class Converter {
   private formatValue(value: unknown): string {
     if (value === undefined || value === null) {
       return '';
-    }
-    if (Array.isArray(value)) {
-      return value.map(v => this.formatValue(v)).join(', ');
     }
     if (typeof value === 'object') {
       return JSON.stringify(value);

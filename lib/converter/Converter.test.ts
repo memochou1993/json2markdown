@@ -502,9 +502,9 @@ Hello, World!
 
 | Id | Name | Email | Friends | Settings | Note | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Alice | alice@example.com | Bob, Charlie | {"theme":"dark"} | \\| foo \\| bar \\| baz \\|<br>\\| --- \\| --- \\| --- \\|<br>\\| 1 \\| 2 \\| 3 \\| |  |
-| 2 | Bob | bob@example.com | Charlie | {"theme":"dark"} | \`\`\`<br>\\| foo \\| bar \\| baz \\|<br>\\| --- \\| --- \\| --- \\|<br>\\| 1 \\| 2 \\| 3 \\|<br>\`\`\` |  |
-| 3 | Charlie | charlie@example.com |  | {<br>"theme": "dark"<br>} |  | inactive |
+| 1 | Alice | alice@example.com | ["Bob","Charlie"] | {"theme":"dark"} | \\| foo \\| bar \\| baz \\|<br>\\| --- \\| --- \\| --- \\|<br>\\| 1 \\| 2 \\| 3 \\| |  |
+| 2 | Bob | bob@example.com | ["Charlie"] | {"theme":"dark"} | \`\`\`<br>\\| foo \\| bar \\| baz \\|<br>\\| --- \\| --- \\| --- \\|<br>\\| 1 \\| 2 \\| 3 \\|<br>\`\`\` |  |
+| 3 | Charlie | charlie@example.com | [] | {<br>"theme": "dark"<br>} |  | inactive |
 
 # Array
 
